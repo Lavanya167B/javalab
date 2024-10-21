@@ -1,0 +1,66 @@
+import java.util.Scanner;
+
+class InputScanner {
+ protected int inputInt() {
+ Scanner scanner = new Scanner(System.in);
+ return scanner.nextInt();
+    }
+}
+
+abstract class Shape extends InputScanner {
+    protected int dimension1;
+    protected int dimension2;
+
+    abstract void printArea();
+}
+
+class Rectangle extends Shape {
+    Rectangle() {
+   System.out.print("Enter length: ");
+   dimension1 = inputInt();
+   System.out.print("Enter width: ");
+   dimension2 = inputInt();
+    }
+
+    void printArea() {
+        System.out.println("Area of Rectangle: " + (dimension1 * dimension2));
+    }
+}
+
+class Triangle extends Shape {
+    Triangle() {
+        System.out.print("Enter base: ");
+        dimension1 = inputInt();
+        System.out.print("Enter height: ");
+        dimension2 = inputInt();
+    }
+
+    void printArea() {
+        System.out.println("Area of Triangle: " + (0.5 * dimension1 * dimension2));
+    }
+}
+
+class Circle extends Shape {
+    Circle() {
+        System.out.print("Enter radius: ");
+        dimension1 = inputInt();
+    }
+
+    void printArea() {
+        System.out.println("Area of Circle: " + (Math.PI * dimension1 * dimension1));
+    }
+}
+
+public class AbstractArea {
+    public static void main(String[] args) {
+        Shape rectangle = new Rectangle();
+        rectangle.printArea();
+
+        Shape triangle = new Triangle();
+        triangle.printArea();
+
+        Shape circle = new Circle();
+        circle.printArea();
+    }
+}
+
