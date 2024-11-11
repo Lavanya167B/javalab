@@ -1,0 +1,141 @@
+package CIE;
+
+public class Student {
+    protected String usn;
+    protected String name;
+    protected int sem;
+
+    public Student(String usn, String name, int sem) {
+        this.usn = usn;
+        this.name = name;
+        this.sem = sem;
+    }
+
+    // Getters
+    public String getUsn() {
+        return usn;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getSem() {
+        return sem;
+    }
+}
+
+package CIE;
+
+public class Internals extends Student {
+    private int[] internalMarks;
+
+    public Internals(String usn, String name, int sem, int[] internalMarks) {
+        super(usn, name, sem);
+        this.internalMarks = internalMarks;
+    }
+
+    public int[] getInternalMarks() {
+        return internalMarks;
+    }
+}
+
+package SEE;
+
+import CIE.Student;
+
+public class External extends Student {
+    private int[] externalMarks;
+
+    public External(String usn, String name, int sem, int[] externalMarks) {
+        super(usn, name, sem);
+        this.externalMarks = externalMarks;
+    }
+
+    public int[] getExternalMarks() {
+        return externalMarks;
+    }
+}
+
+import CIE.Internals;
+import SEE.External;
+
+import java.util.Scanner;
+
+public class FinalMarksCalculator {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter number of students: ");
+        int n = scanner.nextInt();
+
+        Internals[] internalStudents = new Internals[n];
+        External[] externalStudents = new External[n];
+
+        // Input for Internal Students
+        for (int i = 0; i < n; i++) {
+            System.out.println("Enter details for Internal Student " + (i + 1));
+            System.out.print("USN: ");
+            String usn = scanner.next();
+            System.out.print("Name: ");
+            String name = scanner.next();
+            System.out.print("Semester: ");
+            int sem = scanner.nextInt();
+            int[] internalMarks = new int[5];
+            System.out.println("Enter Internal Marks for 5 courses:");
+            for (int j = 0; j < 5; j++) {
+                internalMarks[j] = scanner.nextInt();
+            }
+            internalStudents[i] = new Internals(usn, name, sem, internalMarks);
+        }
+
+        // Input for External Students
+        for (int i = 0; i < n; i++) {
+            System.out.println("Enter details for External Student " + (i + 1));
+            System.out.print("USN: ");
+            String usn = scanner.next();
+            System.out.print("Name: ");
+            String name = scanner.next();
+            System.out.print("Semester: ");
+            int sem = scanner.nextInt();
+            int[] externalMarks = new int[5];
+            System.out.println("Enter External Marks for 5 courses:");
+            for (int j = 0; j < 5; j++) {
+                externalMarks[j] = scanner.nextInt();
+            }
+            externalStudents[i] = new External(usn, name, sem, externalMarks);
+        }
+
+        // Display Final Marks
+        System.out.println("\nFinal Marks of Students:");
+        for (int i = 0; i < n; i++) {
+            System.out.println("Student " + (i + 1) + ": " + internalStudents[i].getName());
+            displayFinalMarks(internalStudents[i].getInternalMarks(), externalStudents[i].getExternalMarks());
+        }
+
+        scanner.close();
+    }
+
+    private static void displayFinalMarks(int[] internalMarks, int[] externalMarks) {
+        System.out.print("Internal Marks: ");
+        for (int mark : internalMarks) {
+            System.out.print(mark + " ");
+        }
+
+        System.out.print("\nExternal Marks (scaled to 50): ");
+        int[] scaledExternalMarks = new int[externalMarks.length];
+        for (int i = 0; i < externalMarks.length; i++) {
+            scaledExternalMarks[i] = (externalMarks[i] * 50) / 100; // Assuming external marks are out of 100
+            System.out.print(scaledExternalMarks[i] + " ");
+        }
+
+        System.out.print("\nTotal Marks: ");
+        for (int i = 0; i < internalMarks.length; i++) {
+            int total = internalMarks[i] + scaledExternalMarks[i];
+            System.out.print(total + " ");
+        }
+        System.out.println();
+    }
+}
+
