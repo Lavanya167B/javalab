@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 class Subject {
-    int subjectMarks, credits, grade;
+    int subjectMarks; 
+    int credits;      
+    int grade;        
 
     public Subject() {
         this.subjectMarks = 0;
@@ -9,106 +13,110 @@ class Subject {
         this.grade = 0;
     }
 
-    public void setMarksAndCredits(int marks, int credits) {
-        this.subjectMarks = marks;
-        this.credits = credits;
-        calculateGrade();
-    }
-
-    private void calculateGrade() {
+    public void calculateGrade() {
         if (subjectMarks > 100) {
             System.out.println("Error: Marks cannot exceed 100.");
-            this.grade = -1;
+            grade = -1; 
         } else if (subjectMarks < 40) {
-            this.grade = 0; // Fail
+            grade = 0; 
         } else if (subjectMarks >= 90) {
-            this.grade = 10;
+            grade = 10;
         } else if (subjectMarks >= 80) {
-            this.grade = 9;
+            grade = 9;
         } else if (subjectMarks >= 70) {
-            this.grade = 8;
+            grade = 8;
         } else if (subjectMarks >= 60) {
-            this.grade = 7;
+            grade = 7;
         } else if (subjectMarks >= 50) {
-            this.grade = 6;
+            grade = 6;
         } else {
-            this.grade = 5; // Pass
+            grade = 5; 
         }
     }
 }
 
 class Student {
-    String name, usn;
-    double SGPA;
-    Subject[] subjects;
-    Scanner s;
+    String name;        
+    String usn;          
+    double SGPA;         
+    Subject[] subjects;  
+    Scanner s;        
 
-    public Student() {
-        subjects = new Subject[8];
+    Student() {
+        subjects = new Subject[8]; 
         for (int i = 0; i < subjects.length; i++) {
-            subjects[i] = new Subject();
+            subjects[i] = new Subject(); 
         }
         s = new Scanner(System.in);
     }
 
     public void getStudentDetails() {
         System.out.print("Enter USN: ");
-        usn = s.next();
+        this.usn = s.nextLine();
+
         System.out.print("Enter Name: ");
-        name = s.next();
+        this.name = s.nextLine();
     }
 
     public void getMarks() {
         for (int i = 0; i < subjects.length; i++) {
-            System.out.print("Enter marks for subject " + (i + 1) + " (out of 100): ");
-            int marks = s.nextInt();
+            System.out.print("Enter marks for subject " + (i + 1) + ": ");
+            subjects[i].subjectMarks = s.nextInt();
+
             System.out.print("Enter credits for subject " + (i + 1) + ": ");
-            int credits = s.nextInt();
-            subjects[i].setMarksAndCredits(marks, credits);
+            subjects[i].credits = s.nextInt();
+
+            subjects[i].calculateGrade();
+
+            if (subjects[i].grade == -1) { 
+                System.out.println("Please re-enter valid marks and credits.");
+                i--; 
+                continue;
+            }
         }
     }
 
     public void computeSGPA() {
-        double totalPoints = 0.0;
-        int totalCredits = 0;
+        double totalCredits = 0;
+        double totalPoints = 0;
 
         for (Subject subject : subjects) {
-            if (subject.grade != -1) { // Only consider valid grades
-                totalPoints += subject.grade * subject.credits;
-                totalCredits += subject.credits;
-            }
+            totalCredits += subject.credits;
+            totalPoints += subject.grade * subject.credits; 
         }
 
-        SGPA = totalCredits == 0 ? 0 : totalPoints / totalCredits; // Avoid division by zero
-    }
-
-    public void displayResult() {
-        System.out.printf("\nStudent Details:\nUSN: %s\nName: %s\nSGPA: %.2f\n", usn, name, SGPA);
-    }
-
-    public void closeScanner() {
-        s.close();
+        SGPA = totalCredits == 0 ? 0 : totalPoints / totalCredits; 
     }
 }
 
-public class Main {
+public class sgpa {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         
-        System.out.print("Enter the number of students: ");
-        int numberOfStudents = scanner.nextInt();
+        List<Student> students = new ArrayList<>();
         
-        Student[] students = new Student[numberOfStudents];
+        System.out.print("Enter the number of students: ");
+        int n = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
 
-        for (int i = 0; i < numberOfStudents; i++) {
+        for (int i = 0; i < n; i++) {
             System.out.println("\nEntering details for student " + (i + 1));
-            students[i] = new Student();
-            students[i].getStudentDetails();
-            students[i].getMarks();
-            students[i].computeSGPA();
-            students[i].displayResult();
+            Student student = new Student();
+            
+            student.getStudentDetails();      
+            student.getMarks();            
+            student.computeSGPA();           
+            
+            students.add(student);
         }
 
-        scanner.close(); 
+        // Display all students' details
+        System.out.println("\nStudent Details:");
+        
+        for (Student student : students) {
+            System.out.printf("Name: %s\nUSN: %s\nSGPA: %.2f\n", student.name, student.usn, student.SGPA); 
+        }
+        
+        scanner.close();                
     }
 }
